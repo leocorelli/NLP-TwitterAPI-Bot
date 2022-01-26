@@ -1,3 +1,6 @@
+# virtual environment
+NLP_TwitterAPI_Bot
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
