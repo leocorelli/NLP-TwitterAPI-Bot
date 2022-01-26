@@ -19,7 +19,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
-    - name: "Configure AWS Credentials" Action For GitHub Actions
+    - name: "Configure AWS Credentials"
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
