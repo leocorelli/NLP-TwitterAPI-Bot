@@ -4,6 +4,8 @@ import boto3
 from decouple import config
 
 bearer_token = config('BEARER_TOKEN') # coming from .env file (it's an environment variable)
+access_key = config('AWS_ACCESS_KEY_ID')
+secret_key = config('AWS_SECRET_ACCESS_KEY')
 
 def initialize_parameters(term, max_results = 10, bearer_token = bearer_token):
     search = f'{term} -is:retweet'
@@ -62,7 +64,7 @@ def convert_to_df(lst_of_tweets):
     return df
 
 def detect_sentiment(tweets):
-    comprehend = boto3.client(service_name='comprehend', region_name='us-east-1')
+    comprehend = boto3.client(service_name='comprehend', region_name='us-east-1', aws_access_key_id = access_key, aws_secret_access_key = secret_key)
     vals = {'POSITIVE': 0, 'NEUTRAL': 0, 'NEGATIVE': 0, 'MIXED': 0}
     
     print('Calling DetectSentiment')
