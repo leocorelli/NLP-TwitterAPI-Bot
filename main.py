@@ -103,7 +103,7 @@ async def sub(num1: int, num2: int):
     return {"total": total}
 
 @app.get("/multiply/{num1}/{num2}")
-async def sub(num1: int, num2: int):
+async def multiply(num1: int, num2: int):
     """multiply num1 and num2"""
 
     total = num1 * num2
