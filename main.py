@@ -102,6 +102,13 @@ async def sub(num1: int, num2: int):
     total = num1 - num2
     return {"total": total}
 
+@app.get("/multiply/{num1}/{num2}")
+async def sub(num1: int, num2: int):
+    """multiply num1 and num2"""
+
+    total = num1 * num2
+    return {"total": total}
+
 
 @app.get("/nlp/{term}")
 async def nlp(term: str):
