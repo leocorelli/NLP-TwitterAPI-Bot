@@ -18,3 +18,6 @@ This project was an excellent opportunity to practice my professional software e
 1. **Continuous integration**: Linting, testing, and formatting
 2. **Continuous delivery**: Automatic containerization and push to AWS Elastic Container Registry (ECR)
 3. **Continuous deployment**: Automatic deployment pipeline utilizing AWS App Runner
+
+
+<p align="center"><img align="center" width="1000px" src="https://github.com/leocorelli/NLP_TwitterAPI_Bot/blob/main/workflow.png"></p>
