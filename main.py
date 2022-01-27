@@ -95,6 +95,13 @@ async def add(num1: int, num2: int):
     total = num1 + num2
     return {"total": total}
 
+@app.get("/sub/{num1}/{num2}")
+async def sub(num1: int, num2: int):
+    """Subtract num2 from num1"""
+
+    total = num1 - num2
+    return {"total": total}
+
 
 @app.get("/nlp/{term}")
 async def nlp(term: str):
