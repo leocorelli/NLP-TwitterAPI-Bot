@@ -1,3 +1,5 @@
+from fastapi import FastAPI
+import uvicorn
 import requests
 import pandas as pd
 import boto3
@@ -80,13 +82,30 @@ def detect_sentiment(tweets):
 
     return vals
 
+app = FastAPI()
 
-if __name__ == "__main__":
-    query, my_headers = initialize_parameters('duke basketball', max_results = 100)
+@app.get("/")
+async def root():
+    return {"message": "Hello Duke"}
+
+@app.get("/add/{num1}/{num2}")
+async def add(num1: int, num2: int):
+    """Add two numbers together"""
+
+    total = num1 + num2
+    return {"total": total}
+
+
+@app.get("/nlp/{term}")
+async def nlp(term: str):
+    """Do all NLP twitter api search ops"""
+
+    query, my_headers = initialize_parameters(term, max_results = 100)
     unclean_data = call_api(query, my_headers, times = 2)
     tweets = convert_to_list(unclean_data)
     tweets = convert_to_df(tweets)
     sentiment = detect_sentiment(tweets)
-    print(sentiment)
+    return {"sentiment": sentiment}
 
-    #comment
+if __name__ == '__main__':
+    uvicorn.run(app, port=8080, host='0.0.0.0')
