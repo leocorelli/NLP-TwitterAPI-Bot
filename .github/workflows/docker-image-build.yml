@@ -5,7 +5,7 @@ on:
   workflow_run:
     workflows: ["Python application test with Github Actions"]
     types:
-      - success
+      - completed
 
 jobs:
   
