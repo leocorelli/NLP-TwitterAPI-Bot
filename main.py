@@ -6,7 +6,6 @@ import boto3
 from decouple import config
 
 from transformers import pipeline
-import time
 import numpy as np
 
 bearer_token = config('BEARER_TOKEN') # coming from .env file (it's an environment variable)
