@@ -164,8 +164,9 @@ async def realNLP(term: str):
     unclean_data = call_api(query, my_headers, times = 2)
     tweets = convert_to_list(unclean_data)
     tweets = convert_to_df(tweets)
-    positive, negative, not_classified, total = detect_sentiment_new(tweets)
-    return {"Positive": positive, "Negative": negative, "Total # of tweets not classified": not_classified, "Total # of tweets": total}
+    #positive, negative, not_classified, total = detect_sentiment_new(tweets)
+    #return {"Positive": positive, "Negative": negative, "Total # of tweets not classified": not_classified, "Total # of tweets": total}
+    return {"Hi": "Leo"}
 
 if __name__ == '__main__':
     uvicorn.run(app, port=8080, host='0.0.0.0')
