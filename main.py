@@ -5,6 +5,10 @@ import pandas as pd
 import boto3
 from decouple import config
 
+from transformers import pipeline
+import time
+import numpy as np
+
 bearer_token = config('BEARER_TOKEN') # coming from .env file (it's an environment variable)
 access_key = config('AWS_ACCESS_KEY_ID')
 secret_key = config('AWS_SECRET_ACCESS_KEY')
@@ -82,6 +86,41 @@ def detect_sentiment(tweets):
 
     return vals
 
+def detect_sentiment_new(tweets):
+    classifier = pipeline('sentiment-analysis')
+    start = time.time() # begin timing for runtime
+
+    vals = {'POSITIVE': 0, 'NEGATIVE': 0}
+    
+    print('Calling sentiment-analysis')
+    print(f'Analyzing {len(tweets)} total tweets\n')
+
+    for i in range(len(tweets)):
+        if i%50 == 0:
+            print(f'{i}/{len(tweets)}')
+        sentiment = classifier(tweets['tweet'].iloc[i])[0]
+        if sentiment['score'] <= 0.6:
+            continue
+        else:
+            vals[sentiment['label']] += 1
+    
+    print('\nEnd of DetectSentiment\n')
+    end = time.time()
+    print(f'Runtime was {np.round(end-start,2)} seconds.\n')
+    
+    percent_positive = np.round((vals['POSITIVE']/len(tweets)) * 100,2)
+    percent_negative = np.round((vals['NEGATIVE']/len(tweets)) * 100,2)
+    
+    total_not_classified = len(tweets) - (vals['POSITIVE'] + vals['NEGATIVE'])
+    
+    print('**************')
+    print(f'{percent_positive}% positive')
+    print(f'{percent_negative}% negative\n')
+    print(f'Total not classified: {total_not_classified}')
+    print('**************\n')
+
+    return f'{percent_positive}%', f'{percent_negative}%', total_not_classified, len(tweets)
+
 app = FastAPI()
 
 @app.get("/")
@@ -120,6 +159,17 @@ async def nlp(term: str):
     tweets = convert_to_df(tweets)
     sentiment = detect_sentiment(tweets)
     return {"sentiment": sentiment}
+
+@app.get("/RealNLP/{term}")
+async def realNLP(term: str):
+    """New and improved NLP sentimentn analysis"""
+
+    query, my_headers = initialize_parameters(term, max_results = 100)
+    unclean_data = call_api(query, my_headers, times = 2)
+    tweets = convert_to_list(unclean_data)
+    tweets = convert_to_df(tweets)
+    positive, negative, not_classified, total = detect_sentiment_new(tweets)
+    return {"Positive": positive, "Negative": negative, "Total # of tweets not classified": not_classified, "Total # of tweets": total}
 
 if __name__ == '__main__':
     uvicorn.run(app, port=8080, host='0.0.0.0')
