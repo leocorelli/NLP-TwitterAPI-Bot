@@ -87,35 +87,8 @@ def detect_sentiment(tweets):
 
 def detect_sentiment_new(tweets):
     classifier = pipeline('sentiment-analysis', model = "distilbert-base-uncased-finetuned-sst-2-english")
-
-    vals = {'POSITIVE': 0, 'NEGATIVE': 0}
-    
-    print('Calling sentiment-analysis')
-    print(f'Analyzing {len(tweets)} total tweets\n')
-
-    for i in range(len(tweets)):
-        if i%50 == 0:
-            print(f'{i}/{len(tweets)}')
-        sentiment = classifier(tweets['tweet'].iloc[i])[0]
-        if sentiment['score'] <= 0.6:
-            continue
-        else:
-            vals[sentiment['label']] += 1
-    
-    print('\nEnd of DetectSentiment\n')
-    
-    percent_positive = np.round((vals['POSITIVE']/len(tweets)) * 100,2)
-    percent_negative = np.round((vals['NEGATIVE']/len(tweets)) * 100,2)
-    
-    total_not_classified = len(tweets) - (vals['POSITIVE'] + vals['NEGATIVE'])
-    
-    print('**************')
-    print(f'{percent_positive}% positive')
-    print(f'{percent_negative}% negative\n')
-    print(f'Total not classified: {total_not_classified}')
-    print('**************\n')
-
-    return f'{percent_positive}%', f'{percent_negative}%', total_not_classified, len(tweets)
+    print(classifier)
+    return 'hi' #f'{percent_positive}%', f'{percent_negative}%', total_not_classified, len(tweets)
 
 app = FastAPI()
 
@@ -164,9 +137,10 @@ async def realNLP(term: str):
     unclean_data = call_api(query, my_headers, times = 2)
     tweets = convert_to_list(unclean_data)
     tweets = convert_to_df(tweets)
+    test = detect_sentiment_new(tweets)
+    return {"test":test}
     #positive, negative, not_classified, total = detect_sentiment_new(tweets)
     #return {"Positive": positive, "Negative": negative, "Total # of tweets not classified": not_classified, "Total # of tweets": total}
-    return {"Hi": "Leo"}
 
 if __name__ == '__main__':
     uvicorn.run(app, port=8080, host='0.0.0.0')
