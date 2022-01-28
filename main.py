@@ -87,8 +87,7 @@ def detect_sentiment(tweets):
     return vals
 
 def detect_sentiment_new(tweets):
-    classifier = pipeline('sentiment-analysis')
-    start = time.time() # begin timing for runtime
+    classifier = pipeline('sentiment-analysis', model = "distilbert-base-uncased-finetuned-sst-2-english")
 
     vals = {'POSITIVE': 0, 'NEGATIVE': 0}
     
@@ -105,8 +104,6 @@ def detect_sentiment_new(tweets):
             vals[sentiment['label']] += 1
     
     print('\nEnd of DetectSentiment\n')
-    end = time.time()
-    print(f'Runtime was {np.round(end-start,2)} seconds.\n')
     
     percent_positive = np.round((vals['POSITIVE']/len(tweets)) * 100,2)
     percent_negative = np.round((vals['NEGATIVE']/len(tweets)) * 100,2)
@@ -162,7 +159,7 @@ async def nlp(term: str):
 
 @app.get("/RealNLP/{term}")
 async def realNLP(term: str):
-    """New and improved NLP sentimentn analysis"""
+    """New and improved NLP sentiment analysis"""
 
     query, my_headers = initialize_parameters(term, max_results = 100)
     unclean_data = call_api(query, my_headers, times = 2)
