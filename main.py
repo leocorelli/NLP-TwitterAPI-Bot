@@ -1,4 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
+
+templates = Jinja2Templates(directory='htmldirectory')
+
+
 import uvicorn
 import requests
 import pandas as pd
@@ -17,6 +22,7 @@ def initialize_parameters(term, max_results = 10, bearer_token = bearer_token):
     search = f'{term} -is:retweet'
     query = f'https://api.twitter.com/2/tweets/search/recent?query={search}&max_results={max_results}'
     my_headers = {'Authorization' : 'Bearer ' + bearer_token}
+    print(f'\nSearch term: {term}')
     return query, my_headers
 
 
@@ -105,33 +111,27 @@ def detect_sentiment_new(tweets):
             vals[sentiment['label']] += 1
     
     print('\nEnd of DetectSentiment\n')
-    
-    percent_positive = np.round((vals['POSITIVE']/len(tweets)) * 100,2)
-    percent_negative = np.round((vals['NEGATIVE']/len(tweets)) * 100,2)
-    
+
     total_not_classified = len(tweets) - (vals['POSITIVE'] + vals['NEGATIVE'])
+    total_classified = len(tweets) - total_not_classified
+    
+    percent_positive = np.round((vals['POSITIVE']/total_classified) * 100,2)
+    percent_negative = np.round((vals['NEGATIVE']/total_classified) * 100,2)
     
     print('**************')
     print(f'{percent_positive}% positive')
     print(f'{percent_negative}% negative\n')
-    print(f'Total not classified: {total_not_classified}')
+    print(f'Total classified: {total_classified}')
     print('**************\n')
     end = time.time()
-    print(f'Total time elapsed {start - end} seconds.')
-    return f'{percent_positive}%', f'{percent_negative}%', total_not_classified, len(tweets)
+    print(f'Total time elapsed {np.round(end - start,2)} seconds.\n')
+    return f'{percent_positive}%', f'{percent_negative}%', total_classified
 
 app = FastAPI()
 
 @app.get("/")
-async def root():
-    return {"message": "Hello Duke"}
-
-@app.get("/add/{num1}/{num2}")
-async def add(num1: int, num2: int):
-    """Add two numbers together"""
-
-    total = num1 + num2
-    return {"total": total}
+async def root(request: Request):
+    return templates.TemplateResponse("home.html", {"request": request})
 
 @app.get("/sub/{num1}/{num2}")
 async def sub(num1: int, num2: int):
@@ -159,16 +159,17 @@ async def nlp(term: str):
     sentiment = detect_sentiment(tweets)
     return {"sentiment": sentiment}
 
-@app.get("/RealNLP/{term}")
-async def realNLP(term: str):
+@app.get("/RealNLP")
+async def realNLP(request: Request, term: str):
     """New and improved NLP sentiment analysis"""
 
     query, my_headers = initialize_parameters(term, max_results = 100)
     unclean_data = call_api(query, my_headers, times = 2)
     tweets = convert_to_list(unclean_data)
     tweets = convert_to_df(tweets)
-    positive, negative, not_classified, total = detect_sentiment_new(tweets)
-    return {"Positive": positive, "Negative": negative, "Total # of tweets not classified": not_classified, "Total # of tweets": total}
+    positive, negative, total = detect_sentiment_new(tweets)
+    #return {"Positive": positive, "Negative": negative, "Total # of tweets not classified": not_classified, "Total # of tweets": total}
+    return templates.TemplateResponse("away.html", {"request": request, "term":term, "positive":positive, "negative":negative, "total":total})
 
 if __name__ == '__main__':
     uvicorn.run(app, port=8080, host='0.0.0.0')
