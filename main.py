@@ -133,32 +133,6 @@ app = FastAPI()
 async def root(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
-@app.get("/sub/{num1}/{num2}")
-async def sub(num1: int, num2: int):
-    """Subtract num2 from num1"""
-
-    total = num1 - num2
-    return {"total": total}
-
-@app.get("/multiply/{num1}/{num2}")
-async def multiply(num1: int, num2: int):
-    """multiply num1 and num2"""
-
-    total = num1 * num2
-    return {"total": total}
-
-
-@app.get("/nlp/{term}")
-async def nlp(term: str):
-    """Do all NLP twitter api search ops"""
-
-    query, my_headers = initialize_parameters(term, max_results = 100)
-    unclean_data = call_api(query, my_headers, times = 2)
-    tweets = convert_to_list(unclean_data)
-    tweets = convert_to_df(tweets)
-    sentiment = detect_sentiment(tweets)
-    return {"sentiment": sentiment}
-
 @app.get("/RealNLP")
 async def realNLP(request: Request, term: str):
     """New and improved NLP sentiment analysis"""
