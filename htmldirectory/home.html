@@ -3,14 +3,18 @@
     <head>
         <title>Welcome</title>
     </head>
-    <body>
+    <body  style="text-align:center">
         <form>
-            <h1>Welcome to my Twitter NLP microservice! Please enter a term to search:</h1>
+            <h3>Leo Corelli</h3>
+            <h1 style="color: rgb(0, 119, 255)">Welcome to my Twitter NLP microservice! Please enter a term to search:</h1>
         </form>
         <form action="/RealNLP">
             <label for="term">Term you would like to search:</label>
             <input type="text" id="term" name="term"><br><br>
         </form>
-
+        <form>
+            <h3>**This microservice analyzes the ~200 most recent tweets on the particular topic the user selects. Please allow 30 seconds for it to run.**</h3>
+            <h3>** Important note: There is a large negative bias on twitter posts. In general, people post more negative things than positive. Therefore, 50%-50% positive-negative is NOT an accurate baseline to compare sentiment to.**</h3>
+        </form>
     </body>
 </html>
