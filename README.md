@@ -11,7 +11,7 @@
 Website to check out my microservice: https://tinyurl.com/TwitterNLP
 
 ## Project Description
-This microservice performs natural langauge processing (NLP) to detect the sentiment of the most recent 1,000 tweets related to a particular topic. This can be used to extrapolate how the general population is feeling at a particular time about a given topic (for example: a politician, athlete, or stock).
+This microservice performs natural langauge processing (NLP) to detect the sentiment of the most recent 200 tweets related to a particular topic. This can be used to extrapolate how the general population is feeling at a particular time about a given topic (for example: a politician, athlete, or stock).
 
 ## Automated Workflow
 This project was an excellent opportunity to practice my professional software engineering skills. Upon receipt of a push, my workflow does the following:
@@ -21,5 +21,3 @@ This project was an excellent opportunity to practice my professional software e
 
 
 <p align="center"><img align="center" width="1000px" src="https://github.com/leocorelli/NLP_TwitterAPI_Bot/blob/main/workflow.png"></p>
-
-Test
