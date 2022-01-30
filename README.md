@@ -8,7 +8,7 @@
 
 [![Python application test with Github Actions](https://github.com/leocorelli/NLP_TwitterAPI_Bot/actions/workflows/main.yml/badge.svg)](https://github.com/leocorelli/NLP_TwitterAPI_Bot/actions/workflows/main.yml)
 
-Website to check out my microservice: https://tinyurl.com/NLPSentimentAnalysis
+Website to check out my microservice: https://tinyurl.com/TwitterNLP
 
 ## Project Description
 This microservice performs natural langauge processing (NLP) to detect the sentiment of the most recent 1,000 tweets related to a particular topic. This can be used to extrapolate how the general population is feeling at a particular time about a given topic (for example: a politician, athlete, or stock).
