@@ -10,6 +10,8 @@
 
 Website to check out my microservice: https://tinyurl.com/TwitterNLP
 
+Note: You must search a term that has at least 200 tweets about it!
+
 ## Project Description
 This microservice performs natural langauge processing (NLP) to detect the sentiment of the most recent 200 tweets related to a particular topic. This can be used to extrapolate how the general population is feeling at a particular time about a given topic (for example: a politician, athlete, or stock).
 
