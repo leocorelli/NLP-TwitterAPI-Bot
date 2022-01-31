@@ -3,7 +3,6 @@ from fastapi.templating import Jinja2Templates
 import uvicorn
 import requests
 import pandas as pd
-import boto3
 from decouple import config
 from transformers import pipeline
 import numpy as np
