@@ -1,22 +1,16 @@
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
-
-templates = Jinja2Templates(directory='htmldirectory')
-
-
 import uvicorn
 import requests
 import pandas as pd
 import boto3
 from decouple import config
-
 from transformers import pipeline
 import numpy as np
 import time
 
-bearer_token = config('BEARER_TOKEN') # coming from .env file (it's an environment variable)
-access_key = config('AWS_ACCESS_KEY_ID')
-secret_key = config('AWS_SECRET_ACCESS_KEY')
+bearer_token = config('BEARER_TOKEN') # env variable
+templates = Jinja2Templates(directory='htmldirectory')
 
 def initialize_parameters(term, max_results = 10, bearer_token = bearer_token):
     search = f'{term} -is:retweet'
@@ -75,23 +69,6 @@ def convert_to_df(lst_of_tweets):
     df = df.drop_duplicates(ignore_index = True)
     return df
 
-def detect_sentiment(tweets):
-    comprehend = boto3.client(service_name='comprehend', region_name='us-east-1', aws_access_key_id = access_key, aws_secret_access_key = secret_key)
-    vals = {'POSITIVE': 0, 'NEUTRAL': 0, 'NEGATIVE': 0, 'MIXED': 0}
-    
-    print('Calling DetectSentiment')
-    print(f'Analyzing {len(tweets)} total tweets\n')
-
-    for i in range(len(tweets)):
-        if i%50 == 0:
-            print(f'{i}/{len(tweets)}')
-        sentiment = comprehend.detect_sentiment(Text=tweets['tweet'].iloc[i], LanguageCode='en')
-        vals[sentiment['Sentiment']] += 1
-    
-    print('\nEnd of DetectSentiment\n')
-
-    return vals
-
 def detect_sentiment_new(tweets):
     start = time.time()
     vals = {'POSITIVE': 0, 'NEGATIVE': 0}
@@ -142,7 +119,6 @@ async def realNLP(request: Request, term: str):
     tweets = convert_to_list(unclean_data)
     tweets = convert_to_df(tweets)
     positive, negative, total = detect_sentiment_new(tweets)
-    #return {"Positive": positive, "Negative": negative, "Total # of tweets not classified": not_classified, "Total # of tweets": total}
     return templates.TemplateResponse("away.html", {"request": request, "term":term, "positive":positive, "negative":negative, "total":total})
 
 if __name__ == '__main__':
