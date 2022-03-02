@@ -6,7 +6,6 @@ import pandas as pd
 from decouple import config
 from transformers import pipeline
 import numpy as np
-import time
 from tqdm import tqdm
 
 bearer_token = config('BEARER_TOKEN') # env variable
