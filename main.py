@@ -7,6 +7,7 @@ from decouple import config
 from transformers import pipeline
 import numpy as np
 import time
+from tqdm import tqdm
 
 bearer_token = config('BEARER_TOKEN') # env variable
 templates = Jinja2Templates(directory='htmldirectory')
@@ -69,39 +70,24 @@ def convert_to_df(lst_of_tweets):
     return df
 
 def detect_sentiment_new(tweets):
-    start = time.time()
-    vals = {'POSITIVE': 0, 'NEGATIVE': 0}
+    vals = {'LABEL_0': 0, 'LABEL_1': 0, 'LABEL_2': 0} # 0 --> Negative, 1 --> Neutral, 2 --> Positive
 
-    classifier = pipeline('sentiment-analysis', model = "distilbert-base-uncased-finetuned-sst-2-english")
-
-    print('Calling sentiment-analysis')
+    classifier = pipeline('sentiment-analysis', model = "cardiffnlp/twitter-roberta-base-sentiment")
+    
     print(f'Analyzing {len(tweets)} total tweets\n')
 
-    for i in range(len(tweets)):
-        if i%50 == 0:
-            print(f'{i}/{len(tweets)}')
+    for i in tqdm(range(len(tweets))):
         sentiment = classifier(tweets['tweet'].iloc[i])[0]
-        if sentiment['score'] <= 0.6:
-            continue
-        else:
-            vals[sentiment['label']] += 1
+        vals[sentiment['label']] += 1
     
     print('\nEnd of DetectSentiment\n')
 
-    total_not_classified = len(tweets) - (vals['POSITIVE'] + vals['NEGATIVE'])
-    total_classified = len(tweets) - total_not_classified
-    
-    percent_positive = np.round((vals['POSITIVE']/total_classified) * 100,2)
-    percent_negative = np.round((vals['NEGATIVE']/total_classified) * 100,2)
-    
-    print('**************')
-    print(f'{percent_positive}% positive')
-    print(f'{percent_negative}% negative\n')
-    print(f'Total classified: {total_classified}')
-    print('**************\n')
-    end = time.time()
-    print(f'Total time elapsed {np.round(end - start,2)} seconds.\n')
-    return f'{percent_positive}%', f'{percent_negative}%', total_classified
+    total_classified = len(tweets)
+    percent_positive = np.round((vals['LABEL_2']/total_classified) * 100,2) # positive
+    percent_negative = np.round((vals['LABEL_0']/total_classified) * 100,2) # negative
+    percent_neutral = np.round((vals['LABEL_1']/total_classified) * 100,2) # neutral
+
+    return f'{percent_positive}%', f'{percent_negative}%', f'{percent_neutral}%', total_classified
 
 app = FastAPI()
 
@@ -117,8 +103,8 @@ async def realNLP(request: Request, term: str):
     unclean_data = call_api(query, my_headers, times = 2)
     tweets = convert_to_list(unclean_data)
     tweets = convert_to_df(tweets)
-    positive, negative, total = detect_sentiment_new(tweets)
-    return templates.TemplateResponse("away.html", {"request": request, "term":term, "positive":positive, "negative":negative, "total":total})
+    positive, negative, neutral, total = detect_sentiment_new(tweets)
+    return templates.TemplateResponse("away.html", {"request": request, "term":term, "positive":positive, "negative":negative, "neutral":neutral, "total":total})
 
 if __name__ == '__main__':
     uvicorn.run(app, port=8080, host='0.0.0.0')
