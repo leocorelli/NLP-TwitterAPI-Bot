@@ -99,7 +99,7 @@ async def realNLP(request: Request, term: str):
     """New and improved NLP sentiment analysis"""
 
     query, my_headers = initialize_parameters(term, max_results = 100)
-    unclean_data = call_api(query, my_headers, times = 2)
+    unclean_data = call_api(query, my_headers, times = 1)
     tweets = convert_to_list(unclean_data)
     tweets = convert_to_df(tweets)
     positive, negative, neutral, total = detect_sentiment_new(tweets)
