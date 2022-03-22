@@ -1,20 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html style="height:100%">
     <head>
         <title>Welcome</title>
     </head>
-    <body  style="text-align:center">
+    <body style="text-align:center;background: linear-gradient(#54a5f7, #aaacbe)">
         <form>
             <h3>Leo Corelli</h3>
-            <h1 style="color: rgb(0, 119, 255)">Welcome to my Twitter NLP microservice! Please enter a term to search:</h1>
+            <h1>Welcome to my Twitter NLP microservice!</h1>
         </form>
         <form action="/RealNLP">
-            <label for="term">Term you would like to search:</label>
+            <label for="term">Term you would like to search (takes ~30 seconds to run):</label>
             <input type="text" id="term" name="term"><br><br>
-        </form>
-        <form>
-            <h3 style="color: red">*Please make sure to enter a term/hashtag/trend that would have at least 200 tweets about it in the last 7 days, otherwise you will get an error since there are not enough tweets to analyze. Please allow 30 seconds for microservice to run.*</h3>
-            <h3>**Important note: There is a large negative bias on twitter posts. In general, people post more negative things than positive. Therefore, 50%-50% positive-negative is NOT an accurate baseline to compare sentiment to.**</h3>
         </form>
     </body>
 </html>

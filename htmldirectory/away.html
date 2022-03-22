@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html style="height:100%">
     <head>
-        <title>Sentiment Analysis Results</title>
+        <title>Results</title>
     </head>
-    <body style="text-align:center">
+    <body style="text-align:center;background: linear-gradient(#54a5f7, #aaacbe);background-repeat: no-repeat">
         <form>
-            <h1>It worked! You searched: "{{ term }}". Your results are:</h1>
+            <h1>You searched "{{ term }}". Your results are:</h1>
             <h1 style="color: green;">Positive = {{ positive }}</h1>
             <h1 style="color: black">Neutral = {{ neutral }}</h1>
             <h1 style="color: red">Negative = {{ negative }}</h1>
